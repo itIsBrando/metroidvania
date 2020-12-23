@@ -1,0 +1,9 @@
+*.gif
+mv.bat
+.vscode/
+Tiled maps/
+thing.py
+
+bin/main.map
+bin/main.o
+bin/metriodvania.sav

@@ -179,7 +179,7 @@ map_getTileCollision:
 
 
 ; ==============================================
-; Checks the room buffer for collision
+; Checks the room buffer for collision given a pixel position
 ; --
 ;   - Stores flags into `map_collision_raw_flag`
 ;	- Inputs: `A` = y, `E` = x

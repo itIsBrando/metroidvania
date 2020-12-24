@@ -25,13 +25,15 @@ INCLUDE "graphics/effects.asm"
 INCLUDE "graphics/vram.asm"
 INCLUDE "graphics/blit.asm"
 INCLUDE "graphics/window.asm"
+INCLUDE "graphics/cgb.asm"
 INCLUDE "graphics/animation.asm"
 
 INCLUDE "data/variables.asm"
 INCLUDE "data/data.asm"
 INCLUDE "data/interrupts.asm"
 
-INCLUDE "utility.asm"
+INCLUDE "utility/utility.asm"
+INCLUDE "utility/math.asm"
 
 INCLUDE "game/item/item.asm"
 
@@ -39,7 +41,7 @@ INCLUDE "menus/pause.asm"
 
 INCLUDE "game/player/movement.asm"
 INCLUDE "game/player/scroll.asm"
-INCLUDE "game/player/player.asm"
+INCLUDE "game/player/gravity.asm"
 INCLUDE "game/player/death.asm"
 
 INCLUDE "game/entity/entity.asm"
@@ -62,7 +64,7 @@ ds $134 - $104
 SECTION "HEADER", ROM0[$134]
 
 	db CART_NAME, 0, 0 ; 134-142 is name
-	db $00 ; CGB compatibility flag
+	db $80 ; CGB compatibility flag
 	db "OK" ; new license code
 	db 0 ; SGB compatibility flag
 	db CART_ROM_MBC1_RAM_BAT
@@ -78,6 +80,9 @@ SECTION "MAIN", ROMX
 Start:
     ; initialize stack pointer
     RESET_SP
+
+    ; initialize CGB
+    call cgb_init
     
     ; zero out RAM
     MSET 0, $C000, $01FF

@@ -21,10 +21,10 @@ joypadMask:
 
 
 ; ==============================================
-; `NZ` if in the VBlank interrupt
+; Holds the raw `A` register from the BIOS
 ; ==============================================
-; int_isVBlank:
-;     ds 1
+cgb_gameboy_type:
+    ds 1
 
 
 ; ==============================================

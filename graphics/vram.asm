@@ -15,11 +15,9 @@ gfx_waitVBlank:
 ;	- Destroys: `AF`
 ; ==============================================
 gfx_VRAMReadable:
-	ldh a, [rSTAT]
+	ldh a, [rLCDC]
 	bit 7, a
 	ret z
-	bit 1, a
-	jr z, gfx_VRAMReadable
 .loop:
 	ldh a, [rSTAT]
 	bit 1, a

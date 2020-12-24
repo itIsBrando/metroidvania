@@ -8,7 +8,7 @@ SECTION "ANIMATION", ROM0
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
-anim_doAll:
+oanim_doAll:
     ld a, [ent_table_size]
     or a
     ret z
@@ -65,6 +65,81 @@ anim_doAll:
 
     dec b
     jr nz, .loop
+
+    ret
+
+anim_doAll:
+    ld hl, anim_timer
+    inc [hl]
+    
+    ld a, [ent_table_size]
+    or a
+    ret z
+
+    ld de, ent_animate
+    jp ent_foreach
+
+; ==============================================
+; Checks to see if an entity should change tiles during this frame
+; --
+;	- Inputs: `HL` = base pointer
+;	- Outputs: `Z` = if shouldn't animate, `NZ` = should animate
+;	- Destroys: `AF`, `BC`, `DE`
+; ==============================================
+ent_canAnimate:
+    push hl
+    ld de, ENTITY_ENTRY_ANIMATION_FRAMES
+    add hl, de
+    ; skip if this entity does not have an animation
+    ld a, [hl]
+    or a
+    jr z, .return_z
+    
+    ; skip animation if it is not the right frame to do so
+    ld hl, anim_timer
+    and [hl]
+    jr nz, .return_z
+    
+    ; retrieve base pointer
+    pop hl
+
+    xor a ; return NZ
+    inc a
+    ret
+
+.return_z:
+    pop hl
+    xor a
+    ret 
+
+; ==============================================
+; Swaps the current tile with the entity's alternative tile
+; --
+;	- Inputs: `HL` = base pointer
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+ent_animate:
+    call ent_canAnimate
+    ret z
+
+    call ent_setRedraw
+
+    ld de, ENTITY_ENTRY_TILE
+    add hl, de
+
+    LD16 de, hl
+
+    ld bc, ENTITY_ENTRY_ALT_TILE - ENTITY_ENTRY_TILE
+    add hl, bc
+    ; HL = pointer to alt tile
+    ; DE = pointer to cur tile
+
+    ld b, [hl]
+    ld a, [de]
+    ld [hl], a
+    ld a, b
+    ld [de], a
 
     ret
 

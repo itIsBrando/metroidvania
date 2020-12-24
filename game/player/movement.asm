@@ -1,161 +1,387 @@
-SECTION "PLAYER MOVE", ROM0
+SECTION "PLAYER", ROM0
 ; ==============================================
-; Applys gravity to the player
+; Draws the player
+; --
+;   - Writes the player to DMA
+;   - Destroys: `AF`, `HL`
+; ==============================================
+plr_draw:
+    ld hl, plr_obj_OAM_index
+    ld a, [hl+] ; get DMA address
+    jp ent_writeDMA
+
+; ==============================================
+; Sets the tile of the player in the buffer
+; --
+;	- Inputs: `A` = tile
+;	- Outputs: `NONE`
+;	- Destroys: `A` = 1
+; ==============================================
+plr_setTile:
+    ld [plr_obj_tile], a
+
+; ==============================================
+; Sets the redraw flag for the player
 ; --
 ;	- Inputs: `NONE`
 ;	- Outputs: `NONE`
-;	- Destroys: `ALL`
+;	- Destroys: `A` = 1
 ; ==============================================
-plr_applyGravity:
-    ; return if we are on ground
-    ld a, [plr_obj_is_grounded_flag]
+plr_setRedrawFlag:
+    ld a, 1
+    ld [plr_shouldUpdate], a ; say that we need redraw
+    ret
+    
+
+; ==============================================
+; Moves the player
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `AF`, `HL`
+; ==============================================
+plr_moveLeft: ; should turn this into an entity routine that accepts a pointer
+    ; return if there is a solid
+    call plr_collisionLeft
     or a
     ret nz
 
-    call plr_moveDown
-    
-    ; return if the tile is not solid
-    ld a, [map_collision_flag]
-    or a
-    ret z
-    
-    ; else, set grounded flag
-    ld [plr_obj_is_grounded_flag], a
-    ret
+    ; set player direction
+    ld hl, plr_obj_flag
+    set OAMB_XFLIP, [hl]
 
-; ==============================================
-; Updates plr_obj_is_grounded_flag
-; --
-;   - also updates `plr_frames_since_grounded`
-;   - Checks if there is a solid block underneath the player
-;	- Inputs: `NONE`
-;	- Outputs: `NONE`
-;	- Destroys: `ALL`
-; ==============================================
-plr_checkGrounded:
-    call plr_collisionDown
-    ld [plr_obj_is_grounded_flag], a
-    or a
-    ret z
-    xor a
-    ld [plr_frames_since_grounded], a
-    ret
-
-
-; ==============================================
-; Makes the player jump
-; --
-;	- Inputs: `NONE`
-;	- Outputs: `NONE`
-;	- Destroys: `ALL`
-; ==============================================
-plr_jump:
-
-    ; if we are jumping, the continue jumping
-    ld a, [plr_obj_is_jumping_flag]
-    or a
-    jr nz, .isJumping
-
-    ; return if jump button is not pressed
-    ld a, [key]
-    bit PADB_A, a
-    ret z
-
-    ; return if we are not on the ground
-    ld a, [plr_obj_is_grounded_flag]
-    or a
-    ; ret z
-
-    ; check coyote frame
-    ld a, [plr_frames_since_grounded]
-    cp PLAYER_COYOTE_FRAMES
-    ret nc
-
-    ; otherwise, start our jump
-.initJump:
-    ld a, 1
-    ld [plr_obj_is_jumping_flag], a
-    ;jr .isJumping
-
-; this is called each framw that the player is jumping
-.isJumping:
-    ; return if jump button is not pressed
-    ld a, [key]
-    bit PADB_A, a
-    jr z, .stopJump
-
-    ; check if we need to stop jumping
-    ld hl, plr_obj_is_jumping_flag
-    ld a, [hl]
-    cp PLAYER_JUMP_TABLE_SIZE+1
-    jr nc, .stopJump
-
-    ; increase LUT index
-    inc [hl]
-
-    ld d, 0
-    ld e, a
-
-    push de
-    call plr_collisionUp
-    pop de
-    or a
-    jr nz, .stopJump
-
-
-    ld hl, plr_jump_table-1
-    add hl, de
-    ld b, [hl]
-
-    ld hl, plr_obj_y
-    ld a, [hl] ; get Y coord
-    cp $14
-    jp c, plr_scrollUp
-    sub b
-    ld [hl], a
-    
-    ; declare the we are not on the ground
-    xor a
-    ld [plr_obj_is_grounded_flag], a
-
-    jp plr_setRedrawFlag
-
-
-.stopJump
-    ; reset mask
-    ld hl, joypadMask
-    res PADB_A, [hl]
-    
-    xor a
-    ld [plr_obj_is_jumping_flag], a
-    ret
-
-
-; ==============================================
-; Adds displacement to the player's X position
-; --
-;   - updates redraw flag
-;	- Inputs: `A` = signed displacement
-;	- Outputs: `A` = new X position
-;	- Destroys: `AF`, HL`
-; ==============================================
-plr_changeX:
     ld hl, plr_obj_x
-    add a, [hl]
-    ld [hl], a
-    jp plr_setRedrawFlag
+    ld a, [hl]
+    cp 8
+    jp z, plr_scrollLeft
+    dec [hl]
+    call plr_checkGrounded
+    jr plr_setRedrawFlag
 
 
 ; ==============================================
-; Adds displacement to the player's Y position
+; Moves the player
 ; --
-;   - updates redraw flag
-;	- Inputs: `A` = signed displacement
-;	- Outputs: `A` = new Y position
-;	- Destroys: `AF`, HL`
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `AF`, `HL`
 ; ==============================================
-plr_changeY:
+plr_moveRight:
+    ; return if there is a block there
+    call plr_collisionRight
+    or a
+    ret nz
+
+    ; set player direction
+    ld hl, plr_obj_flag
+    res OAMB_XFLIP, [hl]
+
+    ld hl, plr_obj_x
+    ld a, [hl]
+    cp 160
+    jp z, plr_scrollRight
+    inc [hl]
+    call plr_checkGrounded
+    jr plr_setRedrawFlag
+
+
+; ==============================================
+; Moves the player down
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+plr_moveDown:
+    ; return if there is a block there
+    call plr_collisionDown
+    or a
+    ret nz
+
     ld hl, plr_obj_y
-    add a, [hl]
+    inc [hl]
+    ; check for scroll
+    ld a, [hl]
+    cp MAP_HEIGHT * 8
+    jp nc, plr_scrollDown
+
+    call plr_checkGrounded    
+    jr plr_setRedrawFlag
+
+
+; ==============================================
+; Set player X and Y
+; --
+;	- Inputs: `A` = Y, `E` = X
+;	- Outputs: `NONE`
+;	- Destroys: `AF`, `HL`
+; ==============================================
+plr_setPosition:
+    ld hl, plr_obj_y
+    ld [hl+], a
+    ld [hl], e
+    jr plr_setRedrawFlag
+
+
+; ==============================================
+; Gets the player's position
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `A` = y, `E` = x
+;	- Destroys: `HL`
+; ==============================================
+plr_getPosition:
+    ld hl, plr_obj_y
+    ld a, [hl+]
+    ld e, [hl]
+    ret
+
+
+; ==============================================
+; Checks collision at point (x-1, y-12) 
+; --
+;   - ****REMEMBER THAT SPRITES ARE DRAWN WITH X=X BEING THE RIGHT MOST PIXEL****
+;	- Inputs: `NONE`
+;	- Outputs: `A` = `1` if solid, else `0`
+;	- Destroys: `ALL`
+; ==============================================
+plr_collisionRight:
+    call plr_getPosition
+
+    dec e ; X - 1
+    sub a, 12 ; Y - 12
+
+    jp plr_getCollision
+
+
+; ==============================================
+; Checks collision at point (x - 8, y-12) 
+; --
+;   - ****REMEMBER THAT SPRITES ARE DRAWN WITH X=X BEING THE RIGHT MOST PIXEL****
+;	- Inputs: `NONE`
+;	- Outputs: `A` = `1` if solid, else `0`
+;	- Destroys: `ALL`
+; ==============================================
+plr_collisionLeft:
+    call plr_getPosition
+
+    ld b, a
+    ld a, -8 ; X - 8
+    add a, e
+    ld e, a
+    ld a, b
+
+    sub a, 12 ; Y - 12
+
+    call plr_getCollision
+    ret
+
+
+; ==============================================
+; Checks collision at point (x - 4, y-8) 
+; --
+;   - ****REMEMBER THAT SPRITES ARE DRAWN WITH X=8 BEING THE RIGHT MOST PIXEL****
+;	- Inputs: `NONE`
+;	- Outputs: `A` = `1` if solid, else `0`
+;	- Destroys: `ALL`
+; ==============================================
+plr_collisionDown:
+    call plr_getPosition
+
+    sub 8 ; Y - 8
+    dec e ; X - 2
+    dec e ; X - 2
+
+    call plr_getCollision
+
+    ld a, [map_collision_raw_flag]
+    bit 1, a
+    jr nz, .isPassable
+
+    and $01
+    jr z, .second_check
+    ret
+
+; if the tile can be passed through but is solid on top
+.isPassable:
+    call plr_getPosition
+    DECREMENT e, 4  ; X - 4
+
+    dec a           ; Y - 1
+    
+    call plr_getCollision
+    ld a, [map_collision_raw_flag]
+    and $03
+    ret
+
+; if A = 0 (nonsolid), then check another point
+.second_check:
+    call plr_getPosition
+    ; check (x-7, y-8)
+    sub 8
+    ld d, a
+
+    ld a, e
+    sub a, 7
+    ld e, a
+    
+    ld a, d
+    call plr_getCollision
+
+    ld a, [map_collision_raw_flag]
+    and $01
+    ret
+
+
+; ==============================================
+; Checks collision at point (x - 4, y-16) 
+; --
+;   - ****REMEMBER THAT SPRITES ARE DRAWN WITH X=8 BEING THE RIGHT MOST PIXEL****
+;	- Inputs: `NONE`
+;	- Outputs: `A` = `1` if solid, else `0`
+;	- Destroys: `ALL`
+; ==============================================
+plr_collisionUp:
+    call plr_getPosition
+
+    DECREMENT e, 4
+
+    sub a, 16 ; Y - 16
+
+    jp plr_getCollision
+
+
+; ==============================================
+; Fires the player's gun (Possibly!)
+; --
+;   - `plr_bullet_cool_down` must = 0 and `A button` must be pressed
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+plr_fireGun:
+    ld hl, plr_bullet_cool_down
+    ld a, [hl]
+    or a
+    jr z, .fire
+
+    ; if plr_bullet_cool_down > 0
+    dec [hl]
+    ret
+
+.fire:
+    ; return if no button is pressed
+    ld a, [key]
+    bit PADB_B, a
+    ret z
+
+    ; get cooldown time for the bullet type
+    push hl
+    ld hl, gun_cooldown_table
+
+    ; get an index from bullet type
+    ld a, [plr_bullet_type]
+    call itm_getBulletIndex
+    
+    ld d, a ; A = 0
+    ld e, c
+    add hl, de
+    ld a, [hl]
+    pop hl
+
+    ld [hl], a ; cool down time (frames)
+
+    ; get player position
+    call plr_getPosition
+    ld hl, plr_bullet_buffer
+    push hl
+    
+    ld [hl+], a ; Y
+    ld [hl], e  ; X
+    inc hl      ; Tile
+
+    ; get tile
+    ld de, gun_tile_table
+    ld a, [plr_bullet_type]
+    ; get an index
+    call itm_getBulletIndex
+    ld a, c
+    call utl_lookup_A
+
+    ; store tile
     ld [hl], a
-    jp plr_setRedrawFlag
+    inc hl      ; script pointer
+
+    ld de, srpt_moveLeft
+
+    ; check direction
+    ld a, [plr_obj_flag]
+    bit OAMB_XFLIP, a
+    jr nz, .isLeft
+
+    ld de, srpt_moveRight
+.isLeft:
+    ld [hl], e
+    inc hl
+    ld [hl], d
+    
+    pop hl
+    jp ent_create
+
+
+; ==============================================
+; Hooks the `map_getCollision` routine
+; --
+;   - sets the flag that ensures that tile scripts will run
+;	- Inputs: `A` = y, `E` = x
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+plr_getCollision:
+    ld hl, map_collision_can_run_script
+    ld [hl], 1
+    jp map_getCollision
+
+
+; ==============================================
+; Changes the active bullet for the player
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+plr_changeBullet:
+    ; reset button mask
+    ld hl, joypadMask
+    res PADB_SELECT, [hl]
+
+    ; change bullet type
+    call itm_next
+    
+    ld a, [plr_bullet_type]
+    call itm_getBulletIndex
+
+    ; draw informational text
+    ld hl, plr_bullet_texts
+    ld d, a ; A = 0
+    ld a, c ; A = index
+    add a, a ; x2
+    ld e, a
+    add hl, de
+
+    ld a, [hl+]
+    ld h, [hl]
+    ld l, a
+
+    call wnd_showText
+
+    ; change bullet icon
+    ld a, [plr_bullet_type]
+    call itm_getBulletIndex
+
+    call gfx_VRAMReadable
+    ld a, MAP_TILE_BULLET
+    ; get tile
+    add a, c
+    ld [WINDOW_LOCATION + 4], a
+    ret

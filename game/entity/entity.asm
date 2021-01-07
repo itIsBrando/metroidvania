@@ -167,6 +167,8 @@ ent_collision:
 
     INCREMENT de, ENTITY_ENTRY_Y
     INCREMENT hl, ENTITY_ENTRY_Y
+    ; x1 - 8 >= x2 - 8
+    ; y1 - 8 >= y2 - 8 
     ld a, [de] ; Y1
     add a, 2
     cp [hl] ; Y1+2 >= Y2

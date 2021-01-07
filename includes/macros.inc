@@ -14,11 +14,26 @@ PURGE HOOT
 
 ; attempts to optimize loading into a if n8 = 0
 LD_A: MACRO
-IF \1 == 0
+IF (\1) == 0
     xor a
 ELSE
     ld a, \1
 ENDC
+ENDM
+
+
+; ==============================================
+; Writes one color to a BG palette in CGB mode only
+; --
+;	- Parameters: `pal number (0-7)`, `color number (0-3)`, `16-bit color`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL` except `C`
+; ==============================================
+CGB_WRITE_BG_COLOR: MACRO
+    ld b, \2
+    LD_A \1
+    ld hl, \3
+    call cgb_writeBGColor
 ENDM
 
 ; ==============================================
@@ -38,6 +53,18 @@ VECTOR_LOOKUP_A: MACRO
     ld l, a
 ENDM
 
+; ==============================================
+; Checks if the host gameboy is CGB or GBA
+; --
+;   - `F` flag is modified
+;	- Inputs: `NONE`
+;	- Outputs: `A`>`0` for CGB or GB
+;	- Destroys: `NONE`
+; ==============================================
+IS_CGB: MACRO
+    ld a, [cgb_gameboy_type]
+    or a
+ENDM
 
 ; ==============================================
 ; Gets a VRAM pointer to a tile
@@ -162,7 +189,7 @@ ENDR
 ENDM
 
 ; ==============================================
-; Performs a `LD HL, [HL]` and  `add hl, nn` instruction
+; Performs a `LD HL, [HL+n]` instruction
 ; - useful for when `HL` is a pointer to a pointer
 ; - Destroys: `A` = `L`, `F`
 ; ==============================================

@@ -116,6 +116,7 @@ ent_create:
     xor a
     jp ent_setDataByte1
 
+
 ; ==============================================
 ; A foreach loop for each entity in the entity table
 ; --
@@ -125,18 +126,23 @@ ent_create:
 ;	- Destroys: `ALL`
 ; ==============================================
 ent_foreach:
-    ld a, $C3
     ; store instruction and JP instruction
+    ld a, $C3
     ld hl, ent_call_buffer
     ld [hl+], a
     ld [hl], e
     inc hl
     ld [hl], d
 
+    ; return if we the table is empty
     ld hl, ent_table_size
     ld a, [hl+]
+    or a
+    ret z
 
-    ld b, a
+    ; now loop through each entity
+    ; B = index
+    ld b, 0
 .loop:
 
     push hl
@@ -149,8 +155,12 @@ ent_foreach:
     ld de, ENTITY_ENTRY_SIZE
     add hl, de
 
-    dec b
-    jr nz, .loop
+    ; check if we've finished
+    inc b
+    ld a, [ent_table_size]
+    dec a
+    cp b
+    jr nc, .loop
 
     ret
 

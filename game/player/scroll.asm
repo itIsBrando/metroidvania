@@ -7,7 +7,7 @@ SECTION "SCROLL", ROM0
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
-plr_scrollRight:
+map_scrollRight:
     call wnd_clearMinimap
     call map_rightRoom
     xor a ; don't draw to screen
@@ -79,7 +79,7 @@ plr_scrollRight:
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
-plr_scrollLeft:
+map_scrollLeft:
     call wnd_clearMinimap
 
     call map_leftRoom
@@ -140,7 +140,7 @@ plr_scrollLeft:
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
-plr_scrollUp:
+map_scrollUp:
     call wnd_clearMinimap
     call map_upRoom
     xor a
@@ -201,7 +201,7 @@ plr_test:
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
-plr_scrollDown:
+map_scrollDown:
     call wnd_clearMinimap
     call map_downRoom
     xor a
@@ -220,7 +220,9 @@ plr_scrollDown:
     push hl
 
     halt 
+    push bc
     call gfx_blitRow
+    pop bc
 
     ld b, 8
 .loop2:

@@ -1,11 +1,11 @@
 ; TODO:
+; - rework entity script running to use foreach loop
 ; - ENT_DELETE SHOULD SET REDRAW FLAG!!! (9/5)
-; - create a `telebullet` that will teleport the player upon deletion (HIGH)
-; - Add egg display to the window (9/4)
 ; - add enough rooms to allow the player to collect an egg (9/4)
 ; - have the minimap flash for the room the player is in (LOW)
 ;
 ; DONE:
+; - create a `telebullet` that will teleport the player upon deletion (HIGH)
 ; - Fix the window graphical glitch (9/4)
 ; - enable tile collision scripts to be only activated by player (HIGH)
 ; - slime enemy
@@ -40,6 +40,7 @@ INCLUDE "game/item/item.asm"
 INCLUDE "menus/pause.asm"
 
 INCLUDE "game/player/movement.asm"
+INCLUDE "game/player/collision.asm"
 INCLUDE "game/player/scroll.asm"
 INCLUDE "game/player/gravity.asm"
 INCLUDE "game/player/death.asm"
@@ -47,6 +48,7 @@ INCLUDE "game/player/death.asm"
 INCLUDE "game/entity/entity.asm"
 INCLUDE "game/entity/helper.asm"
 INCLUDE "game/entity/table.asm"
+INCLUDE "game/entity/particle.asm"
 
 INCLUDE "game/scripts/entities.asm"
 INCLUDE "game/scripts/tiles.asm"
@@ -85,7 +87,7 @@ Start:
     call cgb_init
     
     ; zero out RAM
-    MSET 0, $C000, $01FF
+    MSET 0, $C001, $01FF-1 ; skip the CGB byte
 
     ; turn off screen
     xor a
@@ -185,7 +187,8 @@ mainLoop:
     ; do player animation
     call plr_animate
 
-    ; change alternative palette every 3 frames
+    ; change alternative palette every 15 frames
+    ; only in DMG mode
     ld a, [anim_timer]
     and $07
     or a

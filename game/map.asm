@@ -131,30 +131,25 @@ map_loadEntityTable:
 ; Blits the room to the screen
 ; --
 ;   - does not account for `SCX/SCY`
+;   - also does not paint for CGB
 ;	- Inputs: `NONE`
 ;	- Outputs: `NONE`
 ;	- Destroys: `ALL`
 ; ==============================================
 map_drawRoom:
-    ld hl, BG_LOCATION
-    ld de, map_room_buffer
-    ld c, MAP_HEIGHT
-.loopY:
-    ld b, MAP_WIDTH
-.loopX:
-    call gfx_VRAMReadable
-    ld a, [de]
-    ld [hl+], a
-    inc de
-    dec b
-    jr nz, .loopX
+    ld hl, map_room_buffer
+    xor a
+.loop:
+    push hl
+    push af
+    call gfx_blitColumn
+    pop af
+    pop hl
 
-    push de
-    ld de, 32 - 20
-    add hl, de
-    pop de
-    dec c
-    jr nz, .loopY
+    inc hl ; move room pointer
+    inc a ; increase column
+    cp MAP_WIDTH
+    jr nz, .loop
     ret
 
 ; ==============================================

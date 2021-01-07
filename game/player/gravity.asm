@@ -110,7 +110,7 @@ plr_jump:
     ld hl, plr_obj_y
     ld a, [hl] ; get Y coord
     cp $14
-    jp c, plr_scrollUp
+    jp c, map_scrollUp
     sub b
     ld [hl], a
     

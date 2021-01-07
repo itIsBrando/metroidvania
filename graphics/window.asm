@@ -37,8 +37,30 @@ wnd_showText:
 wnd_drawHUD:
     MCOPY dta_window_row_1, WINDOW_LOCATION, 20
     MCOPY dta_window_row_2, WINDOW_LOCATION + $20, 20
+
+    IS_CGB
+    ret z
+
+    ; set VRAM bank
+    ld a, 1
+    ldh [rVBK], a
+    ; set palette for minimap HUD
+    ld hl, WINDOW_LOCATION + 18
+    call .write_pal
+    
+    ld hl, WINDOW_LOCATION + $20 + 18
+    call .write_pal
+
+    xor a
+    ldh [rVBK], a
     ret
 
+.write_pal:
+    call gfx_VRAMReadable
+    ld a, 1
+    ld [hl+], a
+    ld [hl], a
+    ret
 ; ==============================================
 ; Resets minimap pixels at `map_current_id`
 ; --

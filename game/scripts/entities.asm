@@ -460,6 +460,9 @@ srpt_entityDownButton:
 ;	- Inputs: `DE` = pointer to entity base
 ; ==============================================
 srpt_entDeath:
+    IS_CGB
+    call nz, .cgb
+    
     ld hl, ENTITY_ENTRY_DATA_1
     add hl, de
     
@@ -479,54 +482,29 @@ srpt_entDeath:
     dec [hl]
     ret
 
-
-; ==============================================
-; Creates a particle at (x, y)
-; --
-;	- Inputs: `A` = y, `E` = x
-;	- Outputs: `NONE`
-;	- Destroys: `ALL`
-; ==============================================
-ent_createParticle:
-    ld hl, plr_bullet_buffer
-    ld [hl+], a     ; Y
-    ld [hl], e      ; X
-    inc hl
-    ld [hl], MAP_TILE_PARTICLE1 ; tile
-    inc hl
-    ld de, srpt_particle
-    call utl_write_DE_to_HL
-
-    ld hl, plr_bullet_buffer
-    call ent_create
-
-    ; set animation up
-    ld a, [ent_table_size]
-    dec a
-    call ent_getEntry
-
-    ld a, MAP_TILE_PARTICLE2
-    ld b, $07
-    jp ent_setAnimation
-
-
-; ==============================================
-; Particle entity
-; --
-;	- Inputs: `DE` = pointer to entity base
-; ==============================================
-srpt_particle:
-    ld hl, ENTITY_ENTRY_DATA_1
+; change entity palette for CGB
+; - preserves `DE` intentionally
+.cgb:
+    ; only modify palette every 16 frames
+    ld a, [anim_timer]
+    and $07
+    ret nz
+    
+    ; toggle CGB color
+    ld hl, ENTITY_ENTRY_FLAG
     add hl, de
     ld a, [hl]
-    inc [hl]
+    xor 1
+    ld [hl], a
 
-    ; delete after one second
-    cp 60
-    jp z, srpt_delete + 1
+    ; set redraw
+    LD16 hl, de
+    call ent_setRedraw
 
+    ; restore DE
+    LD16 de, hl
     ret
-
+    
 
 ; ==============================================
 ; Spike entity that moves up, down, left, & right
@@ -582,7 +560,7 @@ srpt_movingSpike:
     ld [hl], a
     ret 
 
-.points:
+.points: ; what are these coordinates??
     db -8, -16
     db -8, -8
     db 0,  -8

@@ -36,6 +36,8 @@ gfx_blitColumn:
     ld a, [de]
     ld [hl], a
 
+    call gfx_blitCGB
+
     ld a, b
     ld bc, 32
     add hl, bc
@@ -57,12 +59,75 @@ gfx_blitColumn:
     jr nz, .loop
     ret
 
+
+; ==============================================
+; Modifies the colors of certain tiles during blitting
+; --
+;	- Inputs: `HL` = VRAM pointer, `DE` = pointer to buffer
+;	- Outputs: `NONE`
+;	- Destroys: `AF`, `C`
+; ==============================================
+gfx_blitCGB:
+    ld c, a ; save tile
+    ; only run if we in CGB
+    IS_CGB
+    ret z
+    
+    ld a, c
+    ; `C` will be our flag's byte
+    ld c, $0
+
+    call .is_palette1
+    jr nz, .no_palette1
+    inc c ; $01
+    jr .skip_all_further_checks
+.no_palette1:
+    call .is_palette2
+    jr nz, .no_palette2
+    inc c
+    inc c ; $02
+
+.no_palette2:
+
+.skip_all_further_checks:
+    ld a, 1
+    ldh [rVBK], a
+
+    call gfx_VRAMReadable
+    ld [hl], c
+
+    xor a
+    ldh [rVBK], a
+
+    ret
+
+; checks if `A` is a tile that should use a different palette
+; `NZ` = normal, `Z` = colored
+.is_palette1:
+    cp MAP_TILE_FALLING_BLOCK_1
+    ret z
+    cp MAP_TILE_SPIKE
+    ret z
+    cp MAP_TILE_BREAKABLE_BLOCK
+    ; ret z
+    ret
+; checks if `A` is a tile that should use a different palette
+; `NZ` = normal, `Z` = colored
+.is_palette2:
+    cp MAP_TILE_CHECKPOINT_1
+    ret z
+    cp MAP_TILE_CHAIN
+    ret z
+    cp MAP_TILE_HANGING_CHAIN
+    ; ret z
+    ret
+
 ; ==============================================
 ; Copies a row of tiles (`MAP_WIDTH`) to the screen
 ; --
 ;	- Inputs: `HL` = pointer to buffer, `A` = row (0-31)
 ;	- Outputs: `NONE`
-;	- Destroys: `ALL` except `C`
+;	- Destroys: `ALL`
 ; ==============================================
 gfx_blitRow:
     and $1F
@@ -101,6 +166,8 @@ gfx_blitRow:
     call gfx_VRAMReadable
     ld a, [de]
     ld [hl], a
+
+    call gfx_blitCGB
     
     inc hl
     

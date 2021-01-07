@@ -33,6 +33,9 @@ plr_death:
     and b
     jr nz, .noFade
 
+    IS_CGB
+    call nz, plr_death_cgb
+
     ld hl, rOBP1
     ld a, [hl]
     SHIFT_RIGHT a, 2
@@ -88,6 +91,18 @@ plr_death:
     RESET_SP
     ; return to mainloop
     jp mainLoop
+
+
+; ==============================================
+; Darkens the palette in BG0 in CGB only
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+plr_death_cgb:
+    ret
+
 
 ; ==============================================
 ; Sets the player's x and y coords to that of the checkpoint

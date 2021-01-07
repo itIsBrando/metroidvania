@@ -108,7 +108,7 @@ ram_disable:
 	ret
 
 ; ==============================================
-; Copies the pointer in `DE` into `HL`
+; Copies the value in `DE` into `HL`
 ; --
 ;	- `ld [hl], de`
 ;	- Inputs: `HL` = 2 byte RAM, `DE` = pointer to write
@@ -154,6 +154,58 @@ math_xrnd:
 	ld a, l
 	ld [math_seed + 1], a
     ret
+
+
+; ==============================================
+; Calls a routine a certain number of times given a table of pointers
+; --
+;	- each routine call will have the following inputs: `A` = index, `B` = number left to iterate through, `HL` = pointer to entry in table
+;	- Inputs: `HL` = pointer to table, `DE` = pointer to service routine, `A` = number of times to run
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+util_forloop:
+    or a
+    ret z
+
+    push af ; save counter
+    push hl ; save pointer to table
+
+    ld a, $C3
+    ; store instruction and JP instruction
+    ld hl, ent_call_buffer
+    ld [hl+], a
+    call utl_write_DE_to_HL
+
+    pop hl ; HL = pointer to table
+    pop bc ; B = counter
+	xor a
+.loop:
+
+    push hl
+    push bc
+	push af
+
+	ld e, [hl]
+	inc hl
+	ld h, [hl]
+	ld l, e
+
+    call ent_call_buffer
+
+	pop af
+    pop bc
+    pop hl
+
+	inc a
+    inc hl
+    inc hl
+
+    dec b
+    jr nz, .loop
+
+    ret
+
 
 ; ==============================================
 ; fetches D-PAD data into upper word of `A`

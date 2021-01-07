@@ -1,6 +1,14 @@
 SECTION "VARIABLES", WRAM0
 VARIABLES_START:
 ; ==============================================
+; - `bit0` set if CGB
+; - `bit1` set if GBA
+; - this must be the first byte of RAM
+; ==============================================
+cgb_gameboy_type:
+    ds 1
+
+; ==============================================
 ; Used for randomization
 ; ==============================================
 math_seed:
@@ -17,13 +25,6 @@ key:
 ; A byte mask for button presses
 ; ==============================================
 joypadMask:
-    ds 1
-
-
-; ==============================================
-; Holds the raw `A` register from the BIOS
-; ==============================================
-cgb_gameboy_type:
     ds 1
 
 

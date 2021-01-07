@@ -33,10 +33,12 @@ MAP_TILE_OPEN_CHEST         EQU $5D ; open chest
 MAP_TILE_PARTICLE1          EQU $60 ; particle that looks ugly
 MAP_TILE_PARTICLE2          EQU $61
 MAP_TILE_MOVING_SPIKE       EQU $76 ; moving saw looking thing
+MAP_TILE_CHAIN              EQU $78 ; vertical chain that is for aesthetic
+MAP_TILE_HANGING_CHAIN      EQU $79 ; a small, hanging chain that is for aesthetic
 
 MAP_ROOM_TABLE_WIDTH        EQU 5 ; width  of the map array
 MAP_ROOM_TABLE_HEIGHT       EQU 5 ; height of the map array
-MAP_FALLING_BLOCK_FRAMES    EQU 9 ; number of frames the falling block will stay alive before it begins falling
+MAP_FALLING_BLOCK_FRAMES    EQU 10; number of frames the falling block will stay alive before it begins falling
 
 ; 00 is lightest and 11 is darkest
 GRAPHICS_PALETTE		EQU %11100100

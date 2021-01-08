@@ -38,7 +38,7 @@ plr_death:
 
     ld hl, rOBP1
     ld a, [hl]
-    SHIFT_RIGHT a, 2
+    SR a, 2
     ld [hl], a
 
 .noFade:

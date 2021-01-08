@@ -121,7 +121,7 @@ gfx_fadeOut:
     ld b, 4
 .loop:
     ldh a, [rBGP]
-    SHIFT_RIGHT a, 2
+    SR a, 2
     ldh [rBGP], a
     ldh [rOBP0], a
     

@@ -73,7 +73,7 @@ cgb_loadBGPalettes:
 ;	- Destroys: `AF`, `DE`, `HL`
 ; ==============================================
 cgb_writeBGColor:
-    SHIFT_LEFT a, 3 ; times 8
+    SL a, 3 ; times 8
     add a, b
     add a, b ; b * 2
     ; A = A * 8 + b * 2
@@ -97,7 +97,7 @@ cgb_writeBGColor:
 ;	- Destroys: `AF`, `DE`, `HL`
 ; ==============================================
 cgb_writeOBJColor:
-    SHIFT_LEFT a, 3 ; times 8
+    SL a, 3 ; times 8
     add a, b
     add a, b ; b * 2
     ; A = A * 8 + b * 2
@@ -141,7 +141,7 @@ cgb_paletteClear:
 ;	- Destroys: `AF`, `B`, `HL`
 ; ==============================================
 cgb_loadBG:
-    SHIFT_LEFT a, 3 ; times 8
+    SL a, 3 ; times 8
     or $80
     ldh [rBCPS], a
     
@@ -173,7 +173,7 @@ cgb_writeBGPalette:
 ; ==============================================
 cgb_loadOBJ:
     ; get index using `A`
-    SHIFT_LEFT a, 3
+    SL a, 3
     or $80
     ldh [rOCPS], a
 
@@ -222,7 +222,7 @@ cgb_getG:
 ; ==============================================
 cgb_getB:
     ld a, h
-    SHIFT_RIGHT a, 2
+    SR a, 2
     and $1F
     ret
 
@@ -307,7 +307,7 @@ cgb_colorDarken:
 ; ==============================================
 cgb_darkenBGPalette:
     ; gets palette index
-    SHIFT_LEFT a, 3 ; times 8
+    SL a, 3 ; times 8
     add a, b
     add a, b
     or $80
@@ -359,7 +359,7 @@ cgb_darkenBGPalette:
 ; ==============================================
 cgb_lightenBGPalette:
     ; gets palette index
-    SHIFT_LEFT a, 3 ; times 8
+    SL a, 3 ; times 8
     add a, b
     add a, b
     or $80

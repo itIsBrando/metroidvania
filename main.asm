@@ -1,21 +1,3 @@
-; TODO:
-; - rework entity script running to use foreach loop
-; - ENT_DELETE SHOULD SET REDRAW FLAG!!! (9/5)
-; - add enough rooms to allow the player to collect an egg (9/4)
-; - have the minimap flash for the room the player is in (LOW)
-;
-; DONE:
-; - create a `telebullet` that will teleport the player upon deletion (HIGH)
-; - Fix the window graphical glitch (9/4)
-; - enable tile collision scripts to be only activated by player (HIGH)
-; - slime enemy
-; - complete entity tables for completed rooms
-; - entity animation (HIGH)
-; - make shooting useful
-; - entity-entity collision
-; - gfx routine to replace colors of a tile (HIGH)
-; - enable more time for falling tiles (maybe create an entity that wait some number of frames)
-
 INCLUDE "includes/hardware.inc"
 INCLUDE "includes/defines.inc"
 INCLUDE "includes/macros.inc"
@@ -51,6 +33,7 @@ INCLUDE "game/entity/table.asm"
 INCLUDE "game/entity/particle.asm"
 
 INCLUDE "game/scripts/entities.asm"
+INCLUDE "game/scripts/bullet.asm"
 INCLUDE "game/scripts/tiles.asm"
 INCLUDE "game/scripts/death.asm"
 

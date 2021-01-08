@@ -8,7 +8,7 @@
 ent_writeDMA:
     push hl
 
-    SHIFT_LEFT a, 2 ; x4
+    SL a, 2 ; x4
     ld d, 0
     ld e, a
     ld hl, DMA_ADDRESS
@@ -96,45 +96,18 @@ ent_hide:
 ;	- Destroys: `ALL`
 ; ==============================================
 ent_runScripts:
-    ld a, [ent_table_size]
-    or a
-    ret z
+    
+    ld de, .routine
+    jp ent_foreach
 
-    ld [srpt_entity_counter], a
-    ld hl, ent_table
-.loop:
-    push hl
-    ld de, ENTITY_ENTRY_SCRIPT
-    add hl, de
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-
-    pop de
-    push de
-
-    ; find which index we are using
-    ld a, [srpt_entity_counter]
-    ld b, a
-    ld a, [ent_table_size]
-    sub b
-    ld [srpt_entity_index], a
-
-    call utl_callHL
-
-    pop hl
-
-    ld de, ENTITY_ENTRY_SIZE
-    add hl, de
-
-    ld a, [srpt_entity_counter]
-    or a
-    ret z
-    dec a
-    ret z
-
-    ld [srpt_entity_counter], a
-    jr .loop
+.routine: ; HL = pointer to entity
+    LD16 de, hl
+    ld bc, ENTITY_ENTRY_SCRIPT
+    add hl, bc
+    LOAD_HL_HL_IND 0
+    ; HL = pointer to routine
+    ; DE = pointer to entity
+    jp hl
 
 
 ; ==============================================

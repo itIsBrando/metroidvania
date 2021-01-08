@@ -142,8 +142,13 @@ ent_foreach:
 
     ; now loop through each entity
     ; B = index
+    ; C = og size of table
+    ld c, a
     ld b, 0
 .loop:
+
+    ld a, b
+    ld [srpt_entity_index], a
 
     push hl
     push bc
@@ -155,9 +160,26 @@ ent_foreach:
     ld de, ENTITY_ENTRY_SIZE
     add hl, de
 
+    ; check for deletion. Checks if og size of table is same as current
+    ld a, [ent_table_size]
+    cp c
+    jr z, .no_size_change
+    ; c - a
+    sub c
+    cpl 
+    inc a
+.poo:
+    dec c
+    dec b
+    dec a
+    jr nz, .poo
+.break:
+    ld a, [ent_table_size]
+    or a
+    ret z
+.no_size_change:
     ; check if we've finished
     inc b
-    ld a, [ent_table_size]
     dec a
     cp b
     jr nc, .loop
@@ -185,7 +207,7 @@ ent_delete:
     ret c
 
     ; remove last entry from OAM
-    SHIFT_LEFT a, 2
+    SL a, 2
     ld e, a
     ld d, 0
     ld hl, DMA_ADDRESS
@@ -203,7 +225,7 @@ ent_delete:
     ; load A with OAM index
     ld a, [hl]
     ; now we must remove the sprite from OAM
-    SHIFT_LEFT a, 2 ;x4
+    SL a, 2 ;x4
     ld hl, DMA_ADDRESS
     ld d, 0
     ld e, a

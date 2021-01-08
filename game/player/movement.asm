@@ -198,14 +198,14 @@ plr_fireGun:
     ld [hl], a
     inc hl      ; script pointer
 
-    ld de, srpt_moveLeft
+    ld de, srpt_bullet_moveLeft
 
     ; check direction
     ld a, [plr_obj_flag]
     bit OAMB_XFLIP, a
     jr nz, .isLeft
 
-    ld de, srpt_moveRight
+    ld de, srpt_bullet_moveRight
 .isLeft:
     ld [hl], e
     inc hl

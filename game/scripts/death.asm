@@ -37,7 +37,7 @@ dth_create:
 
     ; ld hl, [hl]
     LOAD_HL_HL_IND 0
-    LOAD_DE_HL
+    LD16 de, hl
     pop hl
     call utl_write_DE_to_HL
 
@@ -65,7 +65,7 @@ dth_scripts:
 ; ==============================================
 dth_moveLeft:
     push de
-    LOAD_HL_DE
+    LD16 hl, de
 
     ld e, -DEATH_MOVE_BY
     call ent_changeX
@@ -85,7 +85,7 @@ dth_moveLeft:
 ;	- Destroys: `ALL`
 ; ==============================================
 dth_moveRight:
-    LOAD_HL_DE
+    LD16 hl, de
     
     ld e, DEATH_MOVE_BY
     call ent_changeX
@@ -104,7 +104,7 @@ dth_moveRight:
 ;	- Destroys: `ALL`
 ; ==============================================
 dth_moveUp:
-    LOAD_HL_DE
+    LD16 hl, de
     
     ld e, -DEATH_MOVE_BY
     call ent_changeY
@@ -123,7 +123,7 @@ dth_moveUp:
 ;	- Destroys: `ALL`
 ; ==============================================
 dth_moveDown:
-    LOAD_HL_DE
+    LD16 hl, de
     
     ld e, DEATH_MOVE_BY
     call ent_changeY

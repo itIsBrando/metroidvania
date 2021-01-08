@@ -46,7 +46,7 @@ gfx_blitColumn:
 
     ld hl, MAP_WIDTH
     add hl, de
-    LOAD_DE_HL
+    LD16 de, hl
 
     pop hl
     
@@ -131,7 +131,7 @@ gfx_blitCGB:
 ; ==============================================
 gfx_blitRow:
     and $1F
-    SHIFT_LEFT a, 3 ; x8
+    SL a, 3 ; x8
 
     push hl
     ld l, a
@@ -147,7 +147,7 @@ gfx_blitRow:
 
     ; add X offset
     ldh a, [rSCX]
-    SHIFT_RIGHT a, 3 ; divide by 8
+    SR a, 3 ; divide by 8
     and $1F
     ld d, 0
     ld e, a

@@ -26,7 +26,7 @@ map_tileAt:
     dec e
     dec e
     dec e ; subtract X position by 4
-    SHIFT_RIGHT e, 3 ; divide E (X coord) by 8
+    SR e, 3 ; divide E (X coord) by 8
     add hl, de
     
     ld de, BG_LOCATION
@@ -49,7 +49,7 @@ map_loadRoom:
     call ent_deleteAll
     pop hl
 
-    LOAD_DE_HL ; since DE is preserved in the following routine, I need to copy the pointer into DE
+    LD16 de, hl ; since DE is preserved in the following routine, I need to copy the pointer into DE
 
     ld a, [hl+]
     ld h, [hl]
@@ -185,12 +185,12 @@ map_getCollision:
     cp 144 - 16
     jr nc, .off_screen
 
-    SHIFT_RIGHT e, 3
-    SHIFT_RIGHT a, 3
+    SR e, 3
+    SR a, 3
 
     call map_getTileCollision
 
-    LOAD_DE_HL
+    LD16 de, hl
 
     ; get flags byte
     ld hl, dta_tile_data
@@ -244,7 +244,7 @@ map_getCollision:
     jr nz, .continue
     ; run script
     ld b, 0
-    SHIFT_LEFT c, 1
+    SL c, 1
     ld hl, map_tile_script_pointers
     add hl, bc
     ; now we must fetch pointer
@@ -356,7 +356,7 @@ map_downRoom:
 ;	- Destroys: `DE`, `HL`
 ; ==============================================
 map_setTileWithPointer:
-    LOAD_DE_HL
+    LD16 de, hl
     ld hl, map_obj_set_tile
     ld [hl], 1 ; set enable flag
     inc hl
@@ -388,7 +388,7 @@ map_setTileForVBlank:
     add hl, de
     ld de, BG_LOCATION
     add hl, de
-    LOAD_DE_HL
+    LD16 de, hl
     ld hl, map_obj_set_tile
     ; set enable flag
     ld [hl], 1
@@ -458,12 +458,12 @@ math_div_HL_20
 map_addBackgroundScroll:
     ld c, a
     ldh a, [rSCY] ; add bg displacement
-    SHIFT_RIGHT a, 3
+    SR a, 3
     add a, b ; Y + SCY
     ld b, a
     
     ldh a, [rSCX]
-    SHIFT_RIGHT a, 3
+    SR a, 3
     add a, c
     ret
 

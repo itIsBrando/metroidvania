@@ -12,7 +12,7 @@ ENDR
 
 PURGE HOOT
 
-; attempts to optimize loading into a if n8 = 0
+; attempts to optimize loading into `A` if n8 = `0`
 LD_A: MACRO
 IF (\1) == 0
     xor a
@@ -258,18 +258,6 @@ GET_XY_WINDOW: MACRO
     ld \1, (WINDOW_LOCATION) + (\2) + (32 * (\3))
 ENDM
 
-
-; ==============================================
-; draws an int safely to the bg map
-;	- Parameters: `number`, `x`, `y` 
-;	- Destroys: `ALL`
-; ==============================================
-integerAtWindow: MACRO
-    LD_A \1
-    ld hl, WINDOW_LOCATION + (\2) + (32 * \3) + 2
-    call drawNumber
-ENDM
-
 ; ==============================================
 ; draws a string safely to the bg map
 ;	- Parameters: `string`, `x`, `y` 
@@ -307,7 +295,7 @@ ENDM
 ; Shifts a register left by a given number of times
 ; - Parameters: `register`, `amount`
 ; ==============================================
-SHIFT_LEFT: MACRO
+SL: MACRO
 REPT \2
     sla \1
 ENDR
@@ -318,26 +306,10 @@ ENDM
 ; Shifts a register left by a given number of times
 ; - Parameters: `register`, `amount`
 ; ==============================================
-SHIFT_RIGHT: MACRO
+SR: MACRO
 REPT \2
     srl \1
 ENDR
-ENDM
-
-; ==============================================
-; Copies `DE` into `HL`
-; ==============================================
-LOAD_HL_DE: MACRO
-    ld h, d
-    ld l, e
-ENDM
-
-; ==============================================
-; Copies `HL` into `DE`
-; ==============================================
-LOAD_DE_HL: MACRO
-    ld d, h
-    ld e, l
 ENDM
 
 ; ==============================================

@@ -21,9 +21,9 @@ srpt_tileFallingBlock:
 
     inc b
     inc b
-    SHIFT_LEFT b, 3 ; column * 8 + 16
+    SL b, 3 ; column * 8 + 16
     inc a
-    SHIFT_LEFT a, 3 ; row * 8 + 8
+    SL a, 3 ; row * 8 + 8
     
     ld hl, plr_bullet_buffer
     ld [hl], b ; y

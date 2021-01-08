@@ -27,7 +27,7 @@ map_scrollRight:
 
     ld c, MAP_WIDTH
     ldh a, [rSCX]
-    SHIFT_RIGHT a, 3 ; divide by 8
+    SR a, 3 ; divide by 8
     add a, c
 
     ld hl, map_room_buffer
@@ -87,7 +87,7 @@ map_scrollLeft:
     call map_loadRoom
 
     ldh a, [rSCX]
-    SHIFT_RIGHT a, 3 ; divide by 8
+    SR a, 3 ; divide by 8
     dec a
 
     ld hl, map_room_buffer + MAP_WIDTH-1
@@ -147,7 +147,7 @@ map_scrollUp:
     call map_loadRoom
 plr_test:
     ldh a, [rSCY]
-    SHIFT_RIGHT a, 3
+    SR a, 3
     dec a
 
     ; get pointer to the beginning of the last row
@@ -208,7 +208,7 @@ map_scrollDown:
     call map_loadRoom
 
     ldh a, [rSCY]
-    SHIFT_RIGHT a, 3
+    SR a, 3
     add a, MAP_HEIGHT
 
     ; get pointer to the beginning of the last row

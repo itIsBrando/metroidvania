@@ -193,16 +193,6 @@ plr_bullet_buffer:
 srpt_entity_index:
     ds 1
 
-
-; ==============================================
-; Used for calling all entity scripts.
-;   - 1 byte
-;   - holds the number of entity scripts that still need to be run
-; ==============================================
-srpt_entity_counter:
-    ds 1
-
-
 ; ==============================================
 ; Y coordinate that the player will respawn at
 ; ==============================================

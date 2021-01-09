@@ -4,6 +4,9 @@
  - clean up repetitive code in entity script
  - add a new tile script
  - add entities to two rooms
+ - add screen shake when `bomb blaster` hits something
+ - increase frames on button that toggles dark palette
+ - allow player to keep some upward momentum upon colliding with a tile above the player *(**HIGH**)*
  - add another background palette
  - add enough rooms to allow the player to collect an egg
  - have the minimap flash for the room the player is in *(LOW)*
@@ -11,7 +14,12 @@
  
 ---
 
+<<<<<<< HEAD
 # DONE
+=======
+# DONE:
+ - fixed `gfx_fadeIn` bug not loading palette correctly in DMG mode *(1/9/21)*
+>>>>>>> 142f874bf44d49a3f3ba5f3b3e264fd323596cd3
  - bullets can now shoot through select entities *(1/8/21)*
  - rework entity scripts to use `ent_foreach` *(1/7/21)*
  - `ent_delete` SHOULD SET REDRAW FLAG!!! *(**HIGH**, 9/5/20)*

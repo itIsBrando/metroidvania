@@ -164,7 +164,7 @@ ent_setDataByte1:
 ; --
 ;	- Inputs: `HL` = entity base, `A` = second animation tile, `B` = frames per tile `**MUST BE (POWER OF 2)-1**`
 ;	- Outputs: `NONE`
-;	- Destroys: `AF, `DE`
+;	- Destroys: `AF, `DE`, `HL`
 ; ==============================================
 ent_setAnimation:
     ld de, ENTITY_ENTRY_ALT_TILE
@@ -182,7 +182,7 @@ ent_setAnimation:
 ; --
 ;	- Inputs: `NONE`
 ;	- Outputs: `NONE`
-;	- Destroys: `AF`, `HL`
+;	- Destroys: `AF`, `DE`, `HL`
 ; ==============================================
 plr_animate:
     ld a, [anim_timer]

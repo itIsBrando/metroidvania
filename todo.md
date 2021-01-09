@@ -4,6 +4,9 @@
  - clean up repetitive code in entity script
  - add a new tile script
  - add entities to two rooms
+ - add screen shake when `bomb blaster` hits something
+ - increase frames on button that toggles dark palette
+ - allow player to keep some upward momentum upon colliding with a tile above the player *(**HIGH**)*
  - add another background palette
  - add enough rooms to allow the player to collect an egg
  - have the minimap flash for the room the player is in *(LOW)*

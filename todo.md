@@ -12,6 +12,7 @@
  - have the minimap flash for the room the player is in *(LOW)*
 
 # DONE:
+ - fixed `gfx_fadeIn` bug not loading palette correctly in DMG mode *(1/9/21)*
  - bullets can now shoot through select entities *(1/8/21)*
  - rework entity scripts to use `ent_foreach` *(1/7/21)*
  - ENT_DELETE SHOULD SET REDRAW FLAG!!! *(9/5/20)*

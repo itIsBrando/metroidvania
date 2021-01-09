@@ -38,7 +38,9 @@ gfx_fadeIn:
     ldh [rBGP], a
     ldh [rOBP0], a
     
+    push bc
     call gfx_haltDelay
+    pop bc
     dec b
     jr nz, .loop
     ret
@@ -112,7 +114,7 @@ cgb_fadeIn:
 ; --
 ;	- Inputs: `NONE`
 ;	- Outputs: `NONE`
-;	- Destroys: `AF`, `B`
+;	- Destroys: `AF`, `BC`
 ; ==============================================
 gfx_fadeOut:
     IS_CGB
@@ -142,7 +144,6 @@ cgb_fadeOut:
     ; save these so parent function does not destroy all
     push hl
     push de
-    push bc
 
     ld b, 4
 .loop:
@@ -169,7 +170,6 @@ cgb_fadeOut:
     inc a
     jr nz, .loop
 
-    pop bc
     pop de
     pop hl
     ret

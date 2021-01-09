@@ -139,6 +139,8 @@ map_loadEntityTable:
 map_drawRoom:
     ld hl, map_room_buffer
     xor a
+    ldh [rSCX], a
+    ldh [rSCY], a
 .loop:
     push hl
     push af

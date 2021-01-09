@@ -194,17 +194,4 @@ gfx_blitRow:
     ld de, -32
     add hl, de
     pop de
-    ret 
-
-; ==============================================
-; CP HL,DE
-; --
-;	- Inputs: `HL`, `DE
-;	- Outputs: `NZ` if HL-DE > 0
-;	- Destroys: `A`, `HL`
-; ==============================================
-utl_cp_HL_DE:
-    SUB16 hl, de
-    ld a, l
-    or h
     ret

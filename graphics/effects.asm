@@ -253,3 +253,31 @@ gfx_setDarkPalette:
     call cgb_writeBGColor
 
     ret
+
+; ==============================================
+; Horizontally shakes the screen
+; --
+;	- Inputs: `NONE`
+;	- Outputs: `NONE`
+;	- Destroys: `ALL`
+; ==============================================
+gfx_screenShake:
+    ld b, .lookup_end - .lookup
+    ld hl, .lookup
+.loop:
+    ldh a, [rSCX]
+    add a, [hl]
+    ldh [rSCX], a
+
+    inc hl
+    ; delay
+    halt
+    halt
+
+    dec b
+    jr nz, .loop
+    ret
+
+.lookup:
+    db -7, 14, -13, 12, -11, 10, -9, 8, -7, 6, -5, 4, -3, 2, -1
+.lookup_end:

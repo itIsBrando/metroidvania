@@ -26,7 +26,10 @@ ent_createParticle:
 
     ld a, MAP_TILE_PARTICLE2
     ld b, $07
-    jp ent_setAnimation
+    call ent_setAnimation
+
+    ; do screen shake
+    jp gfx_screenShake
 
 
 ; ==============================================

@@ -114,7 +114,6 @@ Start:
 
     ; load first room
     ld a, 2 + (2 * MAP_ROOM_TABLE_WIDTH)
-    ; ld a, 1 + (3 * MAP_ROOM_TABLE_WIDTH) 
     ld [map_current_id], a
     call map_getFromID
     call map_loadRoom
@@ -132,7 +131,6 @@ Start:
 
     ei
 mainLoop:
-
     halt
     
     call utl_scanJoypad

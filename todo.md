@@ -1,25 +1,26 @@
-# TODO
-
- - fix bug that occurs when the player first dies, the wrong room is drawn *(**HIGH**)*
+# TODO:
  - clean up repetitive code in entity script
  - add a new tile script
  - add entities to two rooms
- - add screen shake when `bomb blaster` hits something
  - increase frames on button that toggles dark palette
- - allow player to keep some upward momentum upon colliding with a tile above the player *(**HIGH**)*
+ - allow player to keep some upward momentum upon colliding with a tile above the player *(**VERY HIGH**)*
+ - add dialog/menu upon the collection of an item *(**MED**)*
+    - for the first item, inform user on how to switch bullets
+ - prevent player's death particles from overflowing on the Y-axis
  - add another background palette
+ - remove and replace `room2x0`'s puzzle that is easily spoofable *(**MED**)*
  - add enough rooms to allow the player to collect an egg
  - have the minimap flash for the room the player is in *(LOW)*
  - boss spawning (**HIGH**)
+ - add exploding sound to `gfx_screenShake` routine
+ - add `quick reset from checkpoint` button
  
 ---
 
-<<<<<<< HEAD
-# DONE
-=======
 # DONE:
  - fixed `gfx_fadeIn` bug not loading palette correctly in DMG mode *(1/9/21)*
->>>>>>> 142f874bf44d49a3f3ba5f3b3e264fd323596cd3
+ - fix bug that occurs when the player first dies, the wrong room is drawn *(**HIGH**, 1/9/21)*
+ - add screen shake when `bomb blaster` hits something *(1/9/21)*
  - bullets can now shoot through select entities *(1/8/21)*
  - rework entity scripts to use `ent_foreach` *(1/7/21)*
  - `ent_delete` SHOULD SET REDRAW FLAG!!! *(**HIGH**, 9/5/20)*

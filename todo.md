@@ -1,9 +1,9 @@
 # TODO:
+ - prevent player clipping on jumping with ceilings with certain heights *(**VERY HIGH**)*
  - clean up repetitive code in entity script
  - add a new tile script
  - add entities to two rooms
  - increase frames on button that toggles dark palette
- - allow player to keep some upward momentum upon colliding with a tile above the player *(**VERY HIGH**)*
  - add dialog/menu upon the collection of an item *(**MED**)*
     - for the first item, inform user on how to switch bullets
  - prevent player's death particles from overflowing on the Y-axis
@@ -18,6 +18,7 @@
 ---
 
 # DONE:
+ - allow player to keep some upward momentum upon colliding with a tile above the player *(**VERY HIGH**, 1/9/21)*
  - fixed `gfx_fadeIn` bug not loading palette correctly in DMG mode *(1/9/21)*
  - fix bug that occurs when the player first dies, the wrong room is drawn *(**HIGH**, 1/9/21)*
  - add screen shake when `bomb blaster` hits something *(1/9/21)*

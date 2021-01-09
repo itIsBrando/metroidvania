@@ -12,6 +12,11 @@ plr_applyGravity:
     or a
     ret nz
 
+    ; return if we are jumping
+    ld a, [plr_obj_is_jumping_flag]
+    or a
+    ret nz
+
     call plr_moveDown
     
     ; return if the tile is not solid
@@ -100,7 +105,7 @@ plr_jump:
     call plr_collisionUp
     pop de
     or a
-    jr nz, .stopJump
+    ret nz ; jr nz, .stopJump
 
 
     ld hl, plr_jump_table-1

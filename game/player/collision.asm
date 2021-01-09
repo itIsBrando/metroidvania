@@ -2,7 +2,7 @@ SECTION "PLR_COLLISION",ROM0
 
 
 ; ==============================================
-; Checks collision at points (x - 2, y-16) and (x - 7, y-16) 
+; Checks collision at points (x - 2, y-17) and (x - 7, y-17) 
 ; --
 ;   - ****REMEMBER THAT SPRITES ARE DRAWN WITH X=8 BEING THE RIGHT MOST PIXEL****
 ;	- Inputs: `NONE`
@@ -14,7 +14,7 @@ plr_collisionUp:
 
     DECREMENT e, 2 ; X - 2
 
-    sub a, 16 ; Y - 16
+    sub a, 18 ; Y - 17
 
     call plr_getCollision
     or a
@@ -22,7 +22,7 @@ plr_collisionUp:
 
     call plr_getPosition
 
-    sub a, 16 ; Y - 16
+    sub a, 18 ; Y - 17
 
     ld d, a ; save Y
     ; X - 7

@@ -233,7 +233,7 @@ dta_tile_data:
 ; A lookup table for Y offsets
 ; ==============================================
 plr_jump_table:
-    db 2, 5, 5, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0, 0
+    db 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, -1, -1
     ; db 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 3, 1, 1, 1, 1, 0, 0, 0, 0
 plr_jump_table_end:
 PLAYER_JUMP_TABLE_SIZE EQU plr_jump_table_end - plr_jump_table

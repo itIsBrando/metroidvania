@@ -175,7 +175,6 @@ mainLoop:
     or a
     call z, .changePalette
 
-
     ld a, [plr_obj_is_grounded_flag]
     or a
     jr nz, mainLoop
@@ -187,6 +186,9 @@ mainLoop:
     jr mainLoop
 
 .changePalette:
+    IS_CGB
+    ret nz
+
     ld hl, rOBP1
     ld a, GRAPHICS_PALETTE2
     cp [hl]
